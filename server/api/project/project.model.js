@@ -3,14 +3,14 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
-//var User = require('./user.model');
+//var User = require('./user.model'); 
 
 var ProjectSchema = new Schema({
   title: { type: String, trim: true  },
-  owner: String,
+  owner: { type : Schema.Types.ObjectId, ref : 'User' },
   created: Date,
   updated: Date,
-  users: Array
+  users: [{ type : Schema.Types.ObjectId, ref : 'User' }]
 });
 
 
@@ -29,12 +29,9 @@ ProjectSchema
 ProjectSchema
   .path('owner')
   .validate(function(owner) {
-    return owner.length;
-  }, 'Owner cannot be blank');
+    return !!owner;
+  }, 'Owner must be linked to user');
 
-var validatePresenceOf = function(value) {
-  return value && value.length;
-};
 /**
  * Pre-save hook
  */
@@ -46,11 +43,11 @@ ProjectSchema
       this.created = now;
 
     if (!this.isNew) return next();
-
-    if (!validatePresenceOf(this.owner))
-      next(new Error('Invalid owner'));
-    else
-      next();
+    next();
   });
+
+// ProjectSchema.methods.getUser = function(cb){
+//    User.findById(this.owner, cb);
+// }
 
 module.exports = mongoose.model('Project', ProjectSchema);

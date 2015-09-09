@@ -39,7 +39,6 @@ exports.create = function (req, res, next) {
  */
 exports.show = function (req, res, next) {
   var userId = req.params.id;
-
   User.findById(userId, function (err, user) {
     if (err) return next(err);
     if (!user) return res.status(401).send('Unauthorized');
@@ -55,6 +54,7 @@ exports.destroy = function(req, res) {
   User.findByIdAndRemove(req.params.id, function(err, user) {
     if(err) return res.status(500).send(err);
     return res.status(204).send('No Content');
+    res.json({success:true, message: "deleted successfully."})
   });
 };
 
@@ -62,9 +62,11 @@ exports.destroy = function(req, res) {
  * Change a users password
  */
 exports.changePassword = function(req, res, next) {
-  var userId = req.user._id;
+  var userId = req.params.id;
   var oldPass = String(req.body.oldPassword);
   var newPass = String(req.body.newPassword);
+
+  console.log("userId: "+userId + " == "+oldPass, newPass);
 
   User.findById(userId, function (err, user) {
     if(user.authenticate(oldPass)) {
@@ -82,8 +84,8 @@ exports.changePassword = function(req, res, next) {
 /**
  * Get my info
  */
-exports.authenticateMe = function(req, res, next) {
-  var userId = req.user._id;
+exports.me = function(req, res, next) {
+  var userId = req.params.id;
   User.findOne({
     _id: userId
   }, '-salt -hashedPassword', function(err, user) { // don't ever give out the password or salt

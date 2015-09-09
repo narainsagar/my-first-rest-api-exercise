@@ -7,6 +7,8 @@
 
 var Thing = require('../api/thing/thing.model');
 var User = require('../api/user/user.model');
+var Project = require('../api/project/project.model');
+
 
 Thing.find({}).remove(function() {
   Thing.create({
@@ -32,18 +34,34 @@ Thing.find({}).remove(function() {
 
 User.find({}).remove(function() {
   User.create({
-    provider: 'local',
-    name: 'Test User',
-    email: 'test@test.com',
+    email: 'test@gmail.com',
+    name: 'test',
     password: 'test'
   }, {
-    provider: 'local',
-    role: 'admin',
-    name: 'Admin',
-    email: 'admin@admin.com',
+    email: 'admin@gmail.com',
+    name: 'admin',
     password: 'admin'
   }, function() {
       console.log('finished populating users');
+    }
+  );
+});
+
+Project.find({}).remove(function() {
+  Project.create({
+      title: 'test_project1',
+      owner: User.findOne({email: 'test@gmail.com'})._id,
+      created: '08-09-2015',
+      updated: '08-09-2015',
+      users: [User.findOne({email: 'admin@gmail.com'})._id]
+  }, {
+      title: 'test_project2',
+      owner: User.findOne({email: 'admin@gmail.com'})._id,
+      created: '08-09-2015',
+      updated: '08-09-2015',
+      users: [User.findOne({email: 'test@gmail.com'})._id]
+  }, function() {
+      console.log('finished populating projects');
     }
   );
 });

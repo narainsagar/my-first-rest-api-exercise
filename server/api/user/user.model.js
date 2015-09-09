@@ -5,7 +5,7 @@ var Schema = mongoose.Schema;
 var crypto = require('crypto');
 
 var UserSchema = new Schema({
-  username: { type: String, trim: true  },
+  email: { type: String, trim: true  },
   role: {
     type: String,
     default: 'admin'
@@ -35,7 +35,7 @@ UserSchema
   .virtual('profile')
   .get(function() {
     return {
-      'username': this.username,
+      'email': this.email,
       'role': this.role
     };
   });
@@ -54,12 +54,12 @@ UserSchema
  * Validations
  */
 
-// Validate empty username
+// Validate empty email
 UserSchema
-  .path('username')
-  .validate(function(username) {
-    return username.length;
-  }, 'UserName cannot be blank');
+  .path('email')
+  .validate(function(email) {
+    return email.length;
+  }, 'email cannot be blank');
 
 // Validate empty password
 UserSchema
@@ -68,12 +68,12 @@ UserSchema
     return hashedPassword.length;
   }, 'Password cannot be blank');
 
-// Validate username is not taken
+// Validate email is not taken
 UserSchema
-  .path('username')
+  .path('email')
   .validate(function(value, respond) {
     var self = this;
-    this.constructor.findOne({username: value}, function(err, user) {
+    this.constructor.findOne({email: value}, function(err, user) {
       if(err) throw err;
       if(user) {
         if(self.id === user.id) return respond(true);
@@ -81,7 +81,7 @@ UserSchema
       }
       respond(true);
     });
-}, 'The specified username address is already in use.');
+}, 'The specified email address is already in use.');
 
 var validatePresenceOf = function(value) {
   return value && value.length;

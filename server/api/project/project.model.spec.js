@@ -2,7 +2,24 @@
 
 var should = require('should');
 var app = require('../../app');
+var User = require('./../user/user.model');
 var Project = require('./project.model');
+
+var narain = new User({
+    email: 'narain@gmail.com',
+    password: 'password',
+    created: '07-09-2015',
+    updated: '07-09-2015'
+});
+var bhavesh = new User({
+    email: 'bhavesh@gmail.com',
+    password: 'password',
+    created: '07-09-2015',
+    updated: '07-09-2015'
+});
+
+narain.save();
+bhavesh.save();
 
 describe('Project Model', function() {
 
@@ -22,20 +39,17 @@ describe('Project Model', function() {
   describe('auto adding and removing', function() {
 
     beforeEach(function(done) {
-      // Clear users before testing
       project = new Project({
-        title: 'example_project',
-        owner: '1',
+        title: 'test_project',
+        owner: narain._id,
         created: '08-09-2015',
         updated: '08-09-2015',
-        users: ['1']
+        users: [bhavesh._id]
       });
-
       project.save(function(err) {
         should.not.exist(err);
         done();
       });
-
     });
 
     afterEach(function(done) {
@@ -58,9 +72,11 @@ describe('Project Model', function() {
     });
 
     it('should create and save a new project', function(done) {
-      project.save(function(err) {
-        should.not.exist(err);
-        done();
+      Project.remove().exec().then(function() {
+        project.save(function(err) {
+          should.not.exist(err);
+          done();
+        });
       });
     });
 
@@ -86,7 +102,7 @@ describe('Project Model', function() {
 
 
     it('should fail when saving without an project owner', function(done) {
-      project.owner = '';
+      project.owner = null;
       project.save(function(err) {
       //  console.log('ERROR:', err.errors.owner.message);
         should.exist(err);
@@ -95,7 +111,7 @@ describe('Project Model', function() {
     });
 
     it('should update project title to new one', function(done) {
-      project.title = 'test_project';
+      project.title = 'example_project';
       project.update(project, function(err) {
       //  console.log('ERROR:', err.errors.title.message);
         should.not.exist(err);
@@ -104,9 +120,27 @@ describe('Project Model', function() {
     });
 
     it('should have 1 project count', function(done) {
-      Project.find({}, function(err, users) {
-        users.should.have.length(1);
+      Project.find({}, function(err, projects) {
+        projects.should.have.length(1);
         done();
+      });
+    });
+
+    it('should have 1 project user/follower', function(done) {
+      Project.find({}, function(err, projects) {
+        projects[0].users.should.have.length(1);
+        done();
+      });
+    });
+
+    it('should be able to add project user (follower)', function(done) {
+      project.users.push(narain._id);
+      project.save(function(err) {
+        Project.find({}, function(err, projects) {
+          projects[0].users.should.have.length(2);
+          console.log('followers', projects[0].users);
+          done();
+        });
       });
     });
 

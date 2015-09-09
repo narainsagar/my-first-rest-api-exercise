@@ -10,6 +10,12 @@ describe('User Model', function() {
 
   describe('begin', function(done) {
 
+    it('delete all', function() {
+      User.remove().exec().then(function() {
+        done();
+      });
+    });
+    
     it('should begin with no users', function(done) {
       User.find({}, function(err, users) {
         users.should.have.length(0);
@@ -24,7 +30,7 @@ describe('User Model', function() {
     beforeEach(function(done) {
       // Clear users before testing
       user = new User({
-        username: 'example_user',
+        email: 'example_user',
         password: 'password',
         created: '07-09-2015',
         updated: '07-09-2015'
@@ -47,7 +53,7 @@ describe('User Model', function() {
         User.find(user, function(err, users) {
           should.not.exist(err);
           users.should.have.length(1);
-          users[0].should.have.property('username');
+          users[0].should.have.property('email');
           users[0].should.have.property('password');
           users[0].should.have.property('created');
           users[0].should.have.property('updated');
@@ -73,10 +79,10 @@ describe('User Model', function() {
       });
     });
 
-    it('should fail when saving without an username', function(done) {
-      user.username = '';
+    it('should fail when saving without an email', function(done) {
+      user.email = '';
       user.save(function(err) {
-      //  console.log('ERROR:', err.errors.username.message);
+      //  console.log('ERROR:', err.errors.email.message);
         should.exist(err);
         done();
       });
