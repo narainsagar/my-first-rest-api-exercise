@@ -46,7 +46,7 @@ IssueSchema
   .pre('save', function(next) {
     var now = new Date();
     this.updated = now;
-    if(!this.created) 
+    if(!this.created)
       this.created = now;
 
     if (!this.isNew) return next();

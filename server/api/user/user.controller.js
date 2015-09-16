@@ -54,7 +54,6 @@ exports.destroy = function(req, res) {
   User.findByIdAndRemove(req.params.id, function(err, user) {
     if(err) return res.status(500).send(err);
     return res.status(204).send('No Content');
-    res.json({success:true, message: "deleted successfully."})
   });
 };
 
@@ -66,14 +65,14 @@ exports.changePassword = function(req, res, next) {
   var oldPass = String(req.body.oldPassword);
   var newPass = String(req.body.newPassword);
 
-  console.log("userId: "+userId + " == "+oldPass, newPass);
-
-  User.findById(userId, function (err, user) {
-    if(user.authenticate(oldPass)) {
+  User.findOne({
+    _id: userId
+  }, function (err, user) {
+    if(user.encryptPassword(oldPass) === user.hashedPassword) {
       user.password = newPass;
       user.save(function(err) {
         if (err) return validationError(res, err);
-        res.status(200).send('OK');
+        res.status(200).send({message: 'OK'});
       });
     } else {
       res.status(403).send('Forbidden');

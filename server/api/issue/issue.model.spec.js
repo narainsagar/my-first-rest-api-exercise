@@ -7,22 +7,23 @@ var Project = require('./../project/project.model');
 var Issue = require('./issue.model');
 
 var narain = new User({
-    email: 'narain@gmail.com',
-    password: 'password',
-    created: '07-09-2015',
-    updated: '07-09-2015'
-});
-var bhavesh = new User({
-    email: 'bhavesh@gmail.com',
-    password: 'password',
-    created: '07-09-2015',
-    updated: '07-09-2015'
+  email: 'narain@gmail.com',
+  password: 'password',
+  created: '07-09-2015',
+  updated: '07-09-2015'
 });
 
-var testProject = {};
+var bhavesh = new User({
+  email: 'bhavesh@gmail.com',
+  password: 'password',
+  created: '07-09-2015',
+  updated: '07-09-2015'
+});
 
 narain.save();
 bhavesh.save();
+
+var testProject = {};
 
 describe('Issue Model', function() {
 

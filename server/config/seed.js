@@ -4,11 +4,10 @@
  */
 
 'use strict';
-
-var Thing = require('../api/thing/thing.model');
 var User = require('../api/user/user.model');
+var Thing = require('../api/thing/thing.model');
 var Project = require('../api/project/project.model');
-
+var Issue = require('../api/issue/issue.model');
 
 Thing.find({}).remove(function() {
   Thing.create({
@@ -35,11 +34,9 @@ Thing.find({}).remove(function() {
 User.find({}).remove(function() {
   User.create({
     email: 'test@gmail.com',
-    name: 'test',
     password: 'test'
   }, {
     email: 'admin@gmail.com',
-    name: 'admin',
     password: 'admin'
   }, function() {
       console.log('finished populating users');
@@ -47,21 +44,69 @@ User.find({}).remove(function() {
   );
 });
 
+
 Project.find({}).remove(function() {
   Project.create({
       title: 'test_project1',
-      owner: User.findOne({email: 'test@gmail.com'})._id,
-      created: '08-09-2015',
-      updated: '08-09-2015',
-      users: [User.findOne({email: 'admin@gmail.com'})._id]
+      owner: function() { User.findOne({email: 'test@gmail.com'}, function (err, user) {
+        if(err) return null;
+        else return user._id;
+      });},
+      users: function() { User.findOne({email: 'admin@gmail.com'}, function (err, user) {
+        if(err) return null;
+        else return user._id;
+      });}
   }, {
       title: 'test_project2',
-      owner: User.findOne({email: 'admin@gmail.com'})._id,
-      created: '08-09-2015',
-      updated: '08-09-2015',
-      users: [User.findOne({email: 'test@gmail.com'})._id]
+      owner: function() { User.findOne({email: 'admin@gmail.com'}, function (err, user) {
+        if(err) return null;
+        else return user._id;
+      });},
+      users: function() { User.findOne({email: 'test@gmail.com'}, function (err, user) {
+        if(err) return null;
+        else return user._id;
+      });}
   }, function() {
       console.log('finished populating projects');
+    }
+  );
+});
+
+Issue.find({}).remove(function() {
+  Issue.create({
+      title: 'test_issue1',
+      description: 'Its just a test project',
+      project: function() { Project.findOne({title: 'test_project1'}, function (err, project) {
+        if(err) return null;
+        else return project._id;
+      });},
+      creator: function() { User.findOne({email: 'test@gmail.com'}, function (err, user) {
+        if(err) return null;
+        else return user._id;
+      });},
+      assignee: function() { User.findOne({email: 'admin@gmail.com'}, function (err, user) {
+        if(err) return null;
+        else return user._id;
+      });},
+      state: true
+  },{
+      title: 'test_issue2',
+      description: 'Its just a test project',
+      project: function() { Project.findOne({title: 'test_project2'}, function (err, project) {
+        if(err) return null;
+        else return project._id;
+      });},
+      creator: function() { User.findOne({email: 'admin@gmail.com'}, function (err, user) {
+        if(err) return null;
+        else return user._id;
+      });},
+      assignee: function() { User.findOne({email: 'test@gmail.com'}, function (err, user) {
+        if(err) return null;
+        else return user._id;
+      });},
+      state: true
+  }, function() {
+      console.log('finished populating issues');
     }
   );
 });

@@ -3,8 +3,6 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
-//var User = require('./user.model'); 
-
 var ProjectSchema = new Schema({
   title: { type: String, trim: true  },
   owner: { type : Schema.Types.ObjectId, ref : 'User' },
@@ -45,9 +43,5 @@ ProjectSchema
     if (!this.isNew) return next();
     next();
   });
-
-// ProjectSchema.methods.getUser = function(cb){
-//    User.findById(this.owner, cb);
-// }
 
 module.exports = mongoose.model('Project', ProjectSchema);

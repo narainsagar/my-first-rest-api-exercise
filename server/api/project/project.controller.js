@@ -54,13 +54,10 @@ exports.update = function(req, res) {
 
 // Deletes a project from the DB.
 exports.destroy = function(req, res) {
-  Project.findById(req.params.id, function (err, project) {
+  Project.findByIdAndRemove(req.params.id, function (err, project) {
     if(err) { return handleError(res, err); }
     if(!project) { return res.status(404).send('Not Found'); }
-    Project.remove(function(err) {
-      if(err) { return handleError(res, err); }
-      return res.status(204).send('No Content');
-    });
+    return res.status(204).send('No Content');
   });
 };
 
