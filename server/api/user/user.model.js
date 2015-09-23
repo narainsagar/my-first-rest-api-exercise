@@ -61,6 +61,7 @@ UserSchema
     return email.length;
   }, 'email cannot be blank');
 
+
 // Validate empty password
 UserSchema
   .path('hashedPassword')

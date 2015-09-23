@@ -53,7 +53,4 @@ IssueSchema
     next();
   });
 
-// IssueSchema.methods.getUser = function(cb){
-//    User.findById(this.owner, cb);
-// }
 module.exports = mongoose.model('Issue', IssueSchema);

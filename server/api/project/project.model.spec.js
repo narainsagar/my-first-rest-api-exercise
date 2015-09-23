@@ -27,6 +27,12 @@ describe('Project Model', function() {
 
   describe('begin', function(done) {
 
+    it('delete all', function() {
+      Project.remove().exec().then(function() {
+        done();
+      });
+    });
+
     it('should begin with no projects', function(done) {
       Project.find({}, function(err, projects) {
         projects.should.have.length(0);
@@ -138,7 +144,7 @@ describe('Project Model', function() {
       project.save(function(err) {
         Project.find({}, function(err, projects) {
           projects[0].users.should.have.length(2);
-          console.log('followers', projects[0].users);
+        //  console.log('followers', projects[0].users);
           done();
         });
       });

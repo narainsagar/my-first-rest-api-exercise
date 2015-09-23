@@ -23,13 +23,25 @@ var bhavesh = new User({
 narain.save();
 bhavesh.save();
 
-var testProject = {};
+var testProject = new Project({
+  title: 'test_project',
+  owner: narain._id,
+  created: '08-09-2015',
+  updated: '08-09-2015',
+  users: [bhavesh._id]
+});
 
 describe('Issue Model', function() {
 
   var issue = {};
 
   describe('begin', function(done) {
+
+    it('delete all', function() {
+      Issue.remove().exec().then(function() {
+        done();
+      });
+    });
 
     it('should begin with no issues', function(done) {
       Issue.find({}, function(err, issues) {

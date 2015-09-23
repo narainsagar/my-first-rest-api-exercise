@@ -88,6 +88,17 @@ describe('User Model', function() {
       });
     });
 
+
+    // it('should fail when saving without an updated', function(done) {
+    //   user.updated = '';
+    //   user.save(function(err) {
+    //   //  console.log('ERROR:', err.errors.updated.message);
+    //     should.exist(err);
+    //     done();
+    //   });
+    // });
+
+
     it("should authenticate user if password is valid", function() {
       return user.authenticate('password').should.be.true;
     });
