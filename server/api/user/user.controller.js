@@ -1,6 +1,7 @@
 'use strict';
 
 var User = require('./user.model');
+var Project = require('../project/project.model');
 var passport = require('passport');
 var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
@@ -14,7 +15,10 @@ var validationError = function(res, err) {
  * restriction: 'admin'
  */
 exports.index = function(req, res) {
-  User.find({}, '-salt -hashedPassword', function (err, users) {
+  var filter = { email: req.query.email, role: req.query.role, 
+    created: req.query.created, updated: req.query.updated }; // optional..
+//  console.log('filter', filter);
+  User.find(filter, '-salt -hashedPassword', function (err, users) {
     if(err) return res.status(500).send(err);
     res.status(200).json(users);
   });
@@ -91,6 +95,33 @@ exports.me = function(req, res, next) {
     if (err) return next(err);
     if (!user) return res.status(401).send('Unauthorized');
     res.json(user);
+  });
+};
+
+/**
+ * Get all projects of user
+ */
+exports.getUserProjects = function(req, res, next) {
+  var userId = req.params.id;
+  var filter = { owner: req.params.id, title: req.query.title,
+    created: req.query.created, updated: req.query.updated }; // optional..
+//  console.log('filter', filter);
+  Project.find(filter, function (err, projects) {
+    if(err) { return handleError(res, err); }
+    if(!projects) { return res.status(404).send('Not Found'); }
+    return res.status(200).json(projects);
+  });
+};
+
+/**
+ * Creates a new project under user
+ */
+exports.createUserProject = function(req, res) {
+  var userId = req.params.id;
+  req.body.owner = req.params.id;
+  Project.create(req.body, function(err, project) {
+    if(err) { return handleError(res, err); }
+    return res.status(201).json(project);
   });
 };
 

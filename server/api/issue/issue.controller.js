@@ -12,10 +12,16 @@
 var config = require('../../config/environment');
 var _ = require('lodash');
 var Issue = require('./issue.model');
+var Comment = require('../comment/comment.model');
 
 // Get list of issues
 exports.index = function(req, res) {
-  Issue.find(function (err, issues) {
+  var filter = { project: req.params.id, title: req.query.title, 
+    description: req.query.description, assignee: req.query.assignee, 
+    created: req.query.created, updated: req.query.updated, 
+    creator: req.query.creator, state: req.query.state }; // optional..
+//  console.log('filter', filter);
+  Issue.find(filter, function (err, issues) {
     if(err) { return handleError(res, err); }
     return res.status(200).json(issues);
   });
@@ -58,6 +64,29 @@ exports.destroy = function(req, res) {
     if(err) { return handleError(res, err); }
     if(!issue) { return res.status(404).send('Not Found'); }
     return res.status(204).send('No Content');
+  });
+};
+
+exports.getIssueComments = function(req, res) {
+  var issueId = req.params.id;
+  var filter = { commentedOn: req.params.id, content: req.query.content, 
+    postedBy: req.query.postedBy, created: req.query.created, 
+    updated: req.query.updated }; // optional..
+//  console.log('filter', filter);
+  Comment.find(filter, function (err, comments) {
+      if(err) { return handleError(res, err); }
+      if(!comments) { return res.status(404).send('Not Found'); }
+      return res.status(200).json(comments);
+  });
+};
+
+exports.createIssueComment = function(req, res) {
+  var issueId = req.params.id;
+  req.body.commentedOn = req.params.id;
+  
+  Comment.create(req.body, function(err, comment) {
+    if(err) { return handleError(res, err); }
+    return res.status(201).json(comment);
   });
 };
 

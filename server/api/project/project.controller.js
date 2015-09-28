@@ -12,10 +12,14 @@
 var config = require('../../config/environment');
 var _ = require('lodash');
 var Project = require('./project.model');
+var Issue = require('../issue/issue.model');
 
 // Get list of projects
 exports.index = function(req, res) {
-  Project.find(function (err, projects) {
+  var filter = { title: req.query.title, owner: req.query.owner, 
+    created: req.query.created, updated: req.query.updated }; // optional..
+//  console.log('filter', filter);
+  Project.find(filter, function (err, projects) {
     if(err) { return handleError(res, err); }
     return res.status(200).json(projects);
   });
@@ -58,6 +62,30 @@ exports.destroy = function(req, res) {
     if(err) { return handleError(res, err); }
     if(!project) { return res.status(404).send('Not Found'); }
     return res.status(204).send('No Content');
+  });
+};
+
+exports.getProjectIssues = function(req, res) {
+  var projectId = req.params.id;
+  var filter = { project: req.params.id, title: req.query.title, 
+    description: req.query.description, assignee: req.query.assignee, 
+    created: req.query.created, updated: req.query.updated, 
+    creator: req.query.creator, state: req.query.state }; // optional..
+//  console.log('filter', filter);
+  Issue.find(filter, function (err, issues) {
+      if(err) { return handleError(res, err); }
+      if(!issues) { return res.status(404).send('Not Found'); }
+      return res.status(200).json(issues);
+  });
+};
+
+exports.createProjectIssue = function(req, res) {
+  var projectId = req.params.id;
+  req.body.project = req.params.id;
+  
+  Issue.create(req.body, function(err, issue) {
+    if(err) { return handleError(res, err); }
+    return res.status(201).json(issue);
   });
 };
 

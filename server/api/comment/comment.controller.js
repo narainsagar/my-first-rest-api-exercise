@@ -15,7 +15,11 @@ var Comment = require('./comment.model');
 
 // Get list of comments
 exports.index = function(req, res) {
-  Comment.find(function (err, comments) {
+  var filter = { commentedOn: req.params.id, content: req.query.content, 
+    postedBy: req.query.postedBy, created: req.query.created, 
+    updated: req.query.updated }; // optional..
+//  console.log('filter', filter);
+  Comment.find(filter, function (err, comments) {
     if(err) { return handleError(res, err); }
     return res.status(200).json(comments);
   });
