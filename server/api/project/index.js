@@ -14,6 +14,8 @@ router.put('/:id', auth.isAuthenticated(), controller.update); //update the proj
 router.patch('/:id', auth.isAuthenticated(), controller.update); //update the project info
 router.delete('/:id', auth.isAuthenticated(), controller.destroy); // delete a project
 
+//router.post('/:id/user', auth.isAuthenticated(), controller.addUser); // add new user to this project
+
 router.get('/:id/issues', auth.isAuthenticated(), controller.getProjectIssues); // get all issues project
 router.post('/:id/issues', auth.isAuthenticated(), controller.createProjectIssue); // create issue under a project
 

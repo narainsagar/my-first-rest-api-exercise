@@ -65,6 +65,22 @@ exports.destroy = function(req, res) {
   });
 };
 
+
+// Updates an existing project in the DB.
+exports.addUser = function(req, res) {
+  if(req.body._id) { delete req.body._id; }
+  Project.findById(req.params.id, function (err, project) {
+    if (err) { return handleError(res, err); }
+    if(!project) { return res.status(404).send('Not Found'); }
+    var updated = _.merge(project, req.body);
+    updated.save(function (err) {
+      if (err) { return handleError(res, err); }
+      return res.status(200).json(project);
+    });
+  });
+};
+
+
 exports.getProjectIssues = function(req, res) {
   var projectId = req.params.id;
   var filter = { project: req.params.id, title: req.query.title, 
@@ -82,7 +98,6 @@ exports.getProjectIssues = function(req, res) {
 exports.createProjectIssue = function(req, res) {
   var projectId = req.params.id;
   req.body.project = req.params.id;
-  
   Issue.create(req.body, function(err, issue) {
     if(err) { return handleError(res, err); }
     return res.status(201).json(issue);
