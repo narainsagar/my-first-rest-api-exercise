@@ -124,7 +124,6 @@ describe('Issue Model', function() {
     it('should fail when saving without an issue creator', function(done) {
       issue.creator = null;
       issue.save(function(err) {
-      //  console.log('ERROR:', err.errors.owner.message);
         should.exist(err);
         done();
       });
@@ -133,7 +132,6 @@ describe('Issue Model', function() {
     it('should update issue title to new one', function(done) {
       issue.title = 'example_issue';
       issue.update(issue, function(err) {
-      //  console.log('ERROR:', err.errors.title.message);
         should.not.exist(err);
         done();
       });

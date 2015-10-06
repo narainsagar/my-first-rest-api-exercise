@@ -122,7 +122,6 @@ describe('Comment Model', function() {
     it('should fail when saving without an comment content', function(done) {
       testComment.content = '';
       testComment.save(function(err) {
-      //  console.log('ERROR:', err.errors.title.message);
         should.exist(err);
         done();
       });
@@ -132,7 +131,6 @@ describe('Comment Model', function() {
     it('should fail when saving without an comment commentedOn/issue', function(done) {
       testComment.commentedOn = null;
       testComment.save(function(err) {
-      //  console.log('ERROR:', err.errors.owner.message);
         should.exist(err);
         done();
       });
@@ -141,7 +139,6 @@ describe('Comment Model', function() {
     it('should fail when saving without an comment creator / postedBy', function(done) {
       testComment.postedBy = null;
       testComment.save(function(err) {
-      //  console.log('ERROR:', err.errors.owner.message);
         should.exist(err);
         done();
       });
@@ -150,7 +147,6 @@ describe('Comment Model', function() {
     it('should update comment title to new one', function(done) {
       testComment.title = 'example_comment';
       testComment.update(testComment, function(err) {
-      //  console.log('ERROR:', err.errors.title.message);
         should.not.exist(err);
         done();
       });

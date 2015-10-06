@@ -7,15 +7,15 @@ var auth = require('../../auth/auth.service');
 
 var router = express.Router();
 
-router.post('/', controller.create); // ok
-router.get('/', auth.isAuthenticated(), controller.index); // ok
-router.get('/:id', auth.isAuthenticated(), controller.show); // ok
-router.delete('/:id', auth.isAuthenticated(), controller.destroy); // ok
-router.get('/:id/me/', controller.me); //ok
-router.put('/:id', auth.isAuthenticated(), controller.changePassword); // ok
-router.patch('/:id', auth.isAuthenticated(), controller.changePassword); // ok
+router.post('/', controller.create); 
+router.get('/', auth.isAuthenticated(), controller.index); 
+router.get('/:id', auth.isAuthenticated(), controller.show);
+router.delete('/:id', auth.isAuthenticated(), controller.destroy);
+router.get('/:id/me/', controller.me);
+router.put('/:id', auth.isAuthenticated(), controller.changePassword);
+router.patch('/:id', auth.isAuthenticated(), controller.changePassword);
 
-router.get('/:id/projects', auth.isAuthenticated(), controller.getUserProjects); // ok
+router.get('/:id/projects', auth.isAuthenticated(), controller.getUserProjects); 
 router.post('/:id/projects', auth.isAuthenticated(), controller.createUserProject);
 
 module.exports = router;

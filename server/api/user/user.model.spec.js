@@ -28,7 +28,6 @@ describe('User Model', function() {
   describe('auto adding and removing', function() {
 
     beforeEach(function(done) {
-      // Clear users before testing
       user = new User({
         email: 'example_user',
         password: 'password',
@@ -82,22 +81,10 @@ describe('User Model', function() {
     it('should fail when saving without an email', function(done) {
       user.email = '';
       user.save(function(err) {
-      //  console.log('ERROR:', err.errors.email.message);
         should.exist(err);
         done();
       });
     });
-
-
-    // it('should fail when saving without an updated', function(done) {
-    //   user.updated = '';
-    //   user.save(function(err) {
-    //   //  console.log('ERROR:', err.errors.updated.message);
-    //     should.exist(err);
-    //     done();
-    //   });
-    // });
-
 
     it("should authenticate user if password is valid", function() {
       return user.authenticate('password').should.be.true;

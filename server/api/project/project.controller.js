@@ -12,6 +12,7 @@
 var config = require('../../config/environment');
 var _ = require('lodash');
 var Project = require('./project.model');
+//var User = require('../user/user.model');
 var Issue = require('../issue/issue.model');
 
 // Get list of projects
@@ -31,14 +32,6 @@ exports.show = function(req, res) {
     if(err) { return handleError(res, err); }
     if(!project) { return res.status(404).send('Not Found'); }
     return res.json(project);
-  });
-};
-
-// Creates a new project in the DB.
-exports.create = function(req, res) {
-  Project.create(req.body, function(err, project) {
-    if(err) { return handleError(res, err); }
-    return res.status(201).json(project);
   });
 };
 
@@ -66,17 +59,53 @@ exports.destroy = function(req, res) {
 };
 
 
-// Updates an existing project in the DB.
+// add new user to this project.
 exports.addUser = function(req, res) {
-  if(req.body._id) { delete req.body._id; }
-  Project.findById(req.params.id, function (err, project) {
+  var projectId = req.params.id;
+  var userId = req.body.user_id;
+  Project.findById(projectId, function (err, project) {
     if (err) { return handleError(res, err); }
     if(!project) { return res.status(404).send('Not Found'); }
-    var updated = _.merge(project, req.body);
-    updated.save(function (err) {
+    project.users.push(userId);
+    project.save(function (err) {
       if (err) { return handleError(res, err); }
       return res.status(200).json(project);
     });
+  });
+};
+
+// get all users of this project.
+exports.getUsers = function(req, res) {
+  var projectId = req.params.id;
+  Project.findById(projectId, function (err, project) {
+    if (err) { return handleError(res, err); }
+    if(!project) { return res.status(404).send('Not Found'); }
+    return res.status(200).json(project.users);
+  });
+};
+
+
+// get all users of this project.
+exports.removeUser = function(req, res) {
+  var projectId = req.params.id;
+  var userId = req.body.user_id;
+  Project.findById(projectId, function (err, project) {
+    if (err) { return handleError(res, err); }
+    if(!project) { return res.status(404).send('Not Found'); }
+    var index = -1;
+    for(var i = 0; i < project.users.length && index === -1; i++) {
+      if (project.users[i] === userId) {
+        index = i;
+      }
+    }
+    if(index !== -1) {
+      project.users.splice(index, 1);
+      project.save(function (err) {
+        if (err) { return handleError(res, err); }
+        return res.status(200).json(project);
+      });
+    }
+    return res.status(404).send('Not Found');
   });
 };
 

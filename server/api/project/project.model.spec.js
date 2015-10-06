@@ -100,7 +100,6 @@ describe('Project Model', function() {
     it('should fail when saving without an project title', function(done) {
       project.title = '';
       project.save(function(err) {
-      //  console.log('ERROR:', err.errors.title.message);
         should.exist(err);
         done();
       });
@@ -110,7 +109,6 @@ describe('Project Model', function() {
     it('should fail when saving without an project owner', function(done) {
       project.owner = null;
       project.save(function(err) {
-      //  console.log('ERROR:', err.errors.owner.message);
         should.exist(err);
         done();
       });
@@ -119,7 +117,6 @@ describe('Project Model', function() {
     it('should update project title to new one', function(done) {
       project.title = 'example_project';
       project.update(project, function(err) {
-      //  console.log('ERROR:', err.errors.title.message);
         should.not.exist(err);
         done();
       });
@@ -144,7 +141,6 @@ describe('Project Model', function() {
       project.save(function(err) {
         Project.find({}, function(err, projects) {
           projects[0].users.should.have.length(2);
-        //  console.log('followers', projects[0].users);
           done();
         });
       });
