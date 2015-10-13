@@ -2,11 +2,12 @@
 
 var should = require('should');
 var app = require('../../app');
+var TestData = require('../../config/TestData.js').TestData;
 var User = require('./user.model');
 
-describe('User Model', function() {
+var user = {};
 
-  var user = {};
+describe('User Model', function() {
 
   describe('begin', function(done) {
 
@@ -28,13 +29,9 @@ describe('User Model', function() {
   describe('auto adding and removing', function() {
 
     beforeEach(function(done) {
-      user = new User({
-        email: 'example_user',
-        password: 'password',
-        created: '07-09-2015',
-        updated: '07-09-2015'
-      });
-
+      TestData.init(false);
+      
+      user = TestData.users[0];
       user.save(function(err) {
         should.not.exist(err);
         done();
@@ -87,7 +84,7 @@ describe('User Model', function() {
     });
 
     it("should authenticate user if password is valid", function() {
-      return user.authenticate('password').should.be.true;
+      return user.authenticate(user.password).should.be.true;
     });
 
     it("should not authenticate user if password is invalid", function() {

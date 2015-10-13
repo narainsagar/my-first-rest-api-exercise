@@ -2,38 +2,12 @@
 
 var should = require('should');
 var app = require('../../app');
-var User = require('./../user/user.model');
-var Project = require('./../project/project.model');
+var TestData = require('../../config/TestData.js').TestData;
 var Issue = require('./issue.model');
 
-var narain = new User({
-  email: 'narain@gmail.com',
-  password: 'password',
-  created: '07-09-2015',
-  updated: '07-09-2015'
-});
-
-var bhavesh = new User({
-  email: 'bhavesh@gmail.com',
-  password: 'password',
-  created: '07-09-2015',
-  updated: '07-09-2015'
-});
-
-narain.save();
-bhavesh.save();
-
-var testProject = new Project({
-  title: 'test_project',
-  owner: narain._id,
-  created: '08-09-2015',
-  updated: '08-09-2015',
-  users: [bhavesh._id]
-});
+var issue = {};
 
 describe('Issue Model', function() {
-
-  var issue = {};
 
   describe('begin', function(done) {
 
@@ -55,14 +29,13 @@ describe('Issue Model', function() {
   describe('auto adding and removing', function() {
 
     beforeEach(function(done) {
-      issue = new Issue({
-        title: 'test_issue',
-        description: 'this is a test issue.',
-        project: testProject._id,
-        assignee: bhavesh._id,
-        creator: narain._id,
-        state: true
-      });
+
+      TestData.init(false);
+      TestData.users[0].save();
+      TestData.users[1].save();
+      TestData.projects[0].save();
+      
+      issue = TestData.issues[0];
       issue.save(function(err) {
         should.not.exist(err);
         done();

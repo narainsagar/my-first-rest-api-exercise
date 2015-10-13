@@ -2,52 +2,12 @@
 
 var should = require('should');
 var app = require('../../app');
-var User = require('./../user/user.model');
-var Project = require('./../project/project.model');
-var Issue = require('./../issue/issue.model');
+var TestData = require('../../config/TestData.js').TestData;
 var Comment = require('./comment.model');
 
-var narain = new User({
-  email: 'narain@gmail.com',
-  password: 'password',
-  created: '07-09-2015',
-  updated: '07-09-2015'
-});
-
-var bhavesh = new User({
-  email: 'bhavesh@gmail.com',
-  password: 'password',
-  created: '07-09-2015',
-  updated: '07-09-2015'
-});
-
-narain.save();
-bhavesh.save();
-
-var testProject = new Project({
-  title: 'test_project',
-  owner: narain._id,
-  created: '08-09-2015',
-  updated: '08-09-2015',
-  users: [bhavesh._id]
-});
-
-testProject.save();
-
-var testIssue = new Issue({
-  title: 'test_issue1',
-  description: 'this is a test issue1.',
-  project: testProject._id,
-  assignee: bhavesh._id,
-  creator: narain._id,
-  state: true
-});
-
-testIssue.save();
+var testComment = {};
 
 describe('Comment Model', function() {
-
-  var testComment = {};
 
   describe('begin', function(done) {
 
@@ -69,11 +29,14 @@ describe('Comment Model', function() {
   describe('auto adding and removing', function() {
 
     beforeEach(function(done) {
-      testComment = new Comment({
-        content: 'test_comment1',
-        commentedOn: testIssue._id,
-        postedBy: narain._id
-      });
+
+      TestData.init(false);
+      TestData.users[0].save();
+      TestData.users[1].save();
+      TestData.projects[0].save();
+      TestData.issues[0].save();
+
+      testComment = TestData.comments[0];
       testComment.save(function(err) {
         should.not.exist(err);
         done();
@@ -81,6 +44,7 @@ describe('Comment Model', function() {
     });
 
     afterEach(function(done) {
+      testComment = {};
       Comment.remove().exec().then(function() {
         done();
       });
@@ -144,8 +108,8 @@ describe('Comment Model', function() {
       });
     });
 
-    it('should update comment title to new one', function(done) {
-      testComment.title = 'example_comment';
+    it('should update comment content to new one', function(done) {
+      testComment.content = 'example_comment';
       testComment.update(testComment, function(err) {
         should.not.exist(err);
         done();

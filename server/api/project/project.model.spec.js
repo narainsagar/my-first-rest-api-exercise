@@ -2,28 +2,12 @@
 
 var should = require('should');
 var app = require('../../app');
-var User = require('./../user/user.model');
+var TestData = require('../../config/TestData.js').TestData;
 var Project = require('./project.model');
 
-var narain = new User({
-    email: 'narain@gmail.com',
-    password: 'password',
-    created: '07-09-2015',
-    updated: '07-09-2015'
-});
-var bhavesh = new User({
-    email: 'bhavesh@gmail.com',
-    password: 'password',
-    created: '07-09-2015',
-    updated: '07-09-2015'
-});
-
-narain.save();
-bhavesh.save();
+var project = {};
 
 describe('Project Model', function() {
-
-  var project = {};
 
   describe('begin', function(done) {
 
@@ -45,13 +29,11 @@ describe('Project Model', function() {
   describe('auto adding and removing', function() {
 
     beforeEach(function(done) {
-      project = new Project({
-        title: 'test_project',
-        owner: narain._id,
-        created: '08-09-2015',
-        updated: '08-09-2015',
-        users: [bhavesh._id]
-      });
+      TestData.init(false);
+      TestData.users[0].save();
+      TestData.users[1].save();
+
+      project = TestData.projects[0];
       project.save(function(err) {
         should.not.exist(err);
         done();
@@ -137,7 +119,7 @@ describe('Project Model', function() {
     });
 
     it('should be able to add project user (follower)', function(done) {
-      project.users.push(narain._id);
+      project.users.push(TestData.users[0]._id);
       project.save(function(err) {
         Project.find({}, function(err, projects) {
           projects[0].users.should.have.length(2);
