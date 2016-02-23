@@ -41,7 +41,7 @@ Along with, used `Mongoose` with `MongoDB` as the library to manage models and p
 Just ignore the frontend (angular) for this project (for now) and only worked on the server folder.
 
 
-**Do you want to start your api exercise from scratch?** 
+**Do you want to start your own api exercise from scratch?** 
 
 If `yes`, then follow this setup otherwise clone this project and use:
 
