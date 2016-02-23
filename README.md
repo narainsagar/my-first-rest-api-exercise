@@ -1,6 +1,6 @@
 # My First REST API Exercise
 
-REST API Template Basic app codebase. This was developed as an exercise assignment for MarketLytics.
+REST API (issue tracking basic app) codebase. This was developed as an exercise assignment for MarketLytics.
 
 ## Introduction
 
